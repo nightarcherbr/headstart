@@ -147,7 +147,8 @@ if( !function_exists('valid_ip') )
 {
 	function valid_ip($ip, $which = '')
 	{
-		return $this->CI->input->valid_ip($ip, $which);
+		$CI = &get_instance();
+		return $CI->input->valid_ip($ip, $which);
 	}
 }
 
@@ -197,18 +198,6 @@ if( !function_exists('numeric') )
 	{
 		return (bool)preg_match( '/^[\-+]?[0-9]*\.?[0-9]+$/', $str);
 
-	}
-}
-
-
-/**
- * Is Numeric
- */
-if( !function_exists('is_numeric') )
-{
-	function is_numeric($str)
-	{
-		return ( ! is_numeric($str)) ? FALSE : TRUE;
 	}
 }
 
@@ -400,16 +389,6 @@ if( !function_exists('valid_document') )
 }
 
 
-/**
- * Verifica se a data é maior de 18 anos
- */
-if( !function_exists('date') )
-{
-	function majority_age($date)
-	{
-	}
-}
-
 /* ----------------------------------------------------------------------------
 -- Funções de processamento de strings
 ---------------------------------------------------------------------------- */
@@ -428,13 +407,13 @@ if( !function_exists('prep_for_form') )
 		{
 			foreach ($data as $key => $val)
 			{
-				$data[$key] = $this->prep_for_form($val);
+				$data[$key] = prep_for_form($val);
 			}
 
 			return $data;
 		}
 
-		if ($this->_safe_form_data == FALSE OR $data === '')
+		if ($data === '')
 		{
 			return $data;
 		}
@@ -473,7 +452,8 @@ if( !function_exists('strip_image_tags') )
 {
 	function strip_image_tags($str)
 	{
-		return $this->CI->input->strip_image_tags($str);
+		$CI = &get_instance();
+		return $CI->input->strip_image_tags($str);
 	}
 }
 
@@ -485,7 +465,8 @@ if( !function_exists('xss_clean') )
 {
 	function xss_clean($str)
 	{
-		return $this->CI->security->xss_clean($str);
+		$CI = &get_instance();
+		return $CI->security->xss_clean($str);
 	}
 }
 
@@ -523,5 +504,17 @@ if( !function_exists('format_document') ){
 		if( strlen($document) == 14 ) 
 			return preg_replace('/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/', '$1.$2.$3/$4-$5', $document);
 		return $document;
+	}
+}
+
+/**
+ * Formata um numero para separação em decimal 
+ */
+if( !function_exists('format_currency') ){
+	function format_currency($valor){
+		$valor = str_replace(".", '***', $valor);
+		$valor = str_replace(",", '.', $valor);
+		$valor = str_replace("***", ',', $valor);
+		return $valor;
 	}
 }

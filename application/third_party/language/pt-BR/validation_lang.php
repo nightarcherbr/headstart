@@ -20,6 +20,7 @@ $lang['integer'] = 'O campo {0} deve conter um número inteiro.';
 $lang['matches'] = 'O campo {0} não corresponde ao %s campo.';
 $lang['is_natural'] = 'O campo {0} deve conter apenas números positivos.';
 $lang['is_natural_no_zero'] = 'O campo {0} deve conter um número maior que zero.';
+$lang['decimal'] = 'O campo {0} deve conter um número decimal.';
 
 $lang['valid_cpf'] = 'O campo {0} deve conter um CPF válido.';
 $lang['valid_cnpj'] = 'O campo {0} deve conter um CNPJ válido.';
@@ -30,6 +31,5 @@ $lang['valid_date'] = 'O campo {0} conter uma data válida.';
 $lang['min_words'] = 'O campo {0} deve conter um número maior que zero.';
 $lang['max_words'] = 'O campo {0} deve conter um número maior que zero.';
 $lang['range_words'] = 'O campo {0} deve conter um número maior que zero.';
-$lang['equal'] = '';
 
 ?>

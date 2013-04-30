@@ -151,7 +151,6 @@ class Validation {
 	public function initialize()
 	{
 		$this->_valid = false;
-		$this->_errors = false;
 		$this->_throw = true;
 		$this->_rules = array();
 	}
@@ -162,6 +161,7 @@ class Validation {
 	public function run(&$data, $group = '')
 	{
 		if( empty($this->_rules) ) return false;
+		$this->_errors = false;
 
 		// Evita grupos inválidos
 		if( !$group == "" && empty($group) ) $group = "";
@@ -169,49 +169,50 @@ class Validation {
 		// Percorre as regras
 		foreach( $this->_rules[$group] as $field => $rules )
 		{
-			// Coleta o valor
-			if( is_array($data) ) $value = isset($data[$field])?$data[$field]:false;
-			if( is_object($data) ) $value = isset($data->$field)?$data->$field:false;
-
 			// Esta regra é requerida
 			$required = false;
 			foreach($rules as $r )
 			{
 				if( $r['rule'] == "required" ) {
 					$required = true;
-					break;
+					continue;
 				}
 			}
 
+			// Coleta o valor
+			if( is_array($data) ) $value = isset($data[$field])?$data[$field]:false;
+			if( is_object($data) ) $value = isset($data->$field)?$data->$field:false;
 
-			if( $required ){
-				// Verifica cada regra uma a uma
-				foreach($rules as $rule)
+			// Verifica cada regra uma a uma
+			foreach($rules as $rule)
+			{
+				$expected	= $rule['expected'];
+				$ruleName	= $rule['rule'];
+				$label		= $rule['label'];
+				$param		= $rule['parameter'];
+
+				// Executa a verificação ou o prep
+				$result = $this->_call( $value, $rule);
+
+				// Verifica o resultado
+				if( !is_bool($result) )
 				{
-					$expected	= $rule['expected'];
-					$ruleName	= $rule['rule'];
-					$label		= $rule['label'];
-					$param		= $rule['parameter'];
-
-					// Executa a verificação ou o prep
-					$result = $this->_call( $value, $rule);
-
-					// Verifica o resultado
-					if( !is_bool($result) )
+					$value = $result;
+				}
+				else
+				{
+					if($result === $expected )
 					{
-						$value = $result;
-					}
-					else
-					{
-						if($result === $expected )
-						{
+						// Verifica se é requerido
+						if( $required == true ) {
 							$this->_valid = false;
 							$this->_trigger($field, $label, $ruleName, $param);
+						}else{
+							$value = false;
+							break;
 						}
 					}
 				}
-			}else{
-				$value = false;
 			}
 
 			// Devolve o valor depois de todos os processamentos
@@ -219,7 +220,17 @@ class Validation {
 			if( is_object($data) ) $data->$field = $value;
 		}
 
-		return ($this->_valid);
+		// Reinicializa e retorna o resultado
+		$valid = ($this->_valid);
+		$this->initialize();
+		return $valid;
+	}
+
+	/**
+	 * Retorna a lista de erros encontrados
+	 */
+	public function get_errors(){
+		return $this->_errors;
 	}
 
 	/**
@@ -276,7 +287,4 @@ class Validation {
 		$this->_messages[$group][$field] = $message;
 		return $this;
 	}
-
-
-
 }
