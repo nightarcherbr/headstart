@@ -32,7 +32,7 @@ if( !function_exists('_parse_asset_html') ){
 /**
  * Evita inclusões duplicadas
  */
-if( !function_exists('_add_params_get') ){
+if( !function_exists('_include_once_pack') ){
 	function _include_once_pack($pack, $path, $include_once = TRUE)
 	{
 		$CI = &get_instance();
@@ -176,8 +176,12 @@ if( !function_exists('css_url') ){
 		}
 
 		// Engana o navegador para ignorar o cache sempre que arquivo for modificado
-		$size = is_file($asset_location)?filemtime($asset_location):0;
-		return _add_params_get( $base_url . $asset_location, array('cache'=>$size));
+		if( (ENVIRONMENT === 'development') ){
+			$cache = array('cache'=> floor(time()/10) );
+		}else{
+			$cache = array('cache'=> is_file($asset_location)?filemtime($asset_location):0 );
+		}
+		return _add_params_get( $base_url . $asset_location, $cache);
 	}
 }
 
@@ -223,8 +227,12 @@ if( !function_exists('less_url') ){
 		}
 
 		// Engana o navegador para ignorar o cache sempre que arquivo for modificado
-		$size = is_file($asset_location)?filemtime($asset_location):0;
-		return _add_params_get( $base_url . $asset_location, array('cache'=>$size));
+		if( (ENVIRONMENT === 'development') ){
+			$cache = array('cache'=> floor(time()/10) );
+		}else{
+			$cache = array('cache'=> is_file($asset_location)?filemtime($asset_location):0 );
+		}
+		return _add_params_get( $base_url . $asset_location, $cache);
 	}
 }
 
@@ -239,7 +247,7 @@ if( !function_exists('less') ){
 
 		$attribute_str = _parse_asset_html($attributes);
 		$url = less_url($asset_name, $module_name);
-		return _include_once_pack('<link href="' . $url . '" rel="stylesheet/less" type="text/css"'.$attribute_str.' />', $url);
+		return _include_once_pack('<link href="' . $url . '" rel="stylesheet" type="text/css"'.$attribute_str.' />', $url);
 	}
 }
 
@@ -264,8 +272,12 @@ if( !function_exists('js_url') ){
 		}
 
 		// Engana o navegador para ignorar o cache sempre que arquivo for modificado
-		$size = is_file($asset_location)?filemtime($asset_location):0;
-		return _add_params_get( $base_url . $asset_location, array('cache'=>$size));
+		if( (ENVIRONMENT === 'development') ){
+			$cache = array('cache'=> floor(time()/10) );
+		}else{
+			$cache = array('cache'=> is_file($asset_location)?filemtime($asset_location):0 );
+		}
+		return _add_params_get( $base_url . $asset_location, $cache);
 	}
 }
 

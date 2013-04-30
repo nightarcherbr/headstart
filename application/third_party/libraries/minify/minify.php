@@ -15,7 +15,7 @@ class Minify {
 		try{
 			if( !is_file($inputFile) ) return false;
 			// load the cache
-			$cacheFile = $inputFile.".cache";
+			$cacheFile = $outputFile.".cache";
 			if (file_exists($cacheFile)) {
 				$cache = unserialize(file_get_contents($cacheFile));
 			} else {
