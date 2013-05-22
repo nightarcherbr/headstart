@@ -150,7 +150,7 @@ class Validation {
 	 */
 	public function initialize()
 	{
-		$this->_valid = false;
+		$this->_valid = true;
 		$this->_throw = true;
 		$this->_rules = array();
 	}
